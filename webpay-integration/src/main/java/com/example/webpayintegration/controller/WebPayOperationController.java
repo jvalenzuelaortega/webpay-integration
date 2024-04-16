@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -22,27 +23,30 @@ public class WebPayOperationController {
 
     @GetMapping("/create-transaction")
     public ResponseEntity<?> createTransaction(@RequestParam Map<String, String> createTransactionParams){
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(createTransactionParams);
     }
 
     @GetMapping("/confirm-transaction")
     public ResponseEntity<?> confirmTransaction(@RequestParam String token){
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(token);
     }
 
     @GetMapping("/get-transaction-status")
     public ResponseEntity<?> getTransactionStatus(@RequestParam String token){
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(token);
     }
 
     @GetMapping("/cancel-transaction")
     public ResponseEntity<?> cancelTransaction(@RequestParam String token,
                                                @RequestParam String amount){
-        return ResponseEntity.ok().build();
+        Map<String, String> cancelTransactionParams = new HashMap<>();
+        cancelTransactionParams.put("token", token);
+        cancelTransactionParams.put("amount", amount);
+        return ResponseEntity.ok().body(cancelTransactionParams);
     }
 
     @GetMapping("/capture-transaction")
     public ResponseEntity<?> captureTransaction(@RequestParam Map<String, String> captureTransactionParams){
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(captureTransactionParams);
     }
 }

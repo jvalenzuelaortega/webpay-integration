@@ -8,6 +8,6 @@ public interface WebPayService {
     Object createTransaction(CreateTransactionDto createTransactionDto);
     Object confirmTransaction(String token);
     Object getTransaction(String token);
-    Object cancelTransaction(String token, Integer amount);
+    Object cancelTransaction(String token, Double amount);
     Object captureTransaction(CaptureTransactionDto captureTransactionDto);
 }

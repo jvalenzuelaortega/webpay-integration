@@ -16,7 +16,7 @@ import java.io.IOException;
 @Component
 public class WebPayClient {
 
-    private Object createTransaction(CreateTransactionDto createTransactionDto) throws TransactionCreateException, IOException {
+    public Object createTransaction(CreateTransactionDto createTransactionDto) throws TransactionCreateException, IOException {
         WebpayPlus.Transaction tx = new WebpayPlus.Transaction(new WebpayOptions(IntegrationCommerceCodes.WEBPAY_PLUS, IntegrationApiKeys.WEBPAY, IntegrationType.TEST));
         final WebpayPlusTransactionCreateResponse response = tx.create(createTransactionDto.getBuyOrder(), createTransactionDto.getSessionId(),
                 createTransactionDto.getAmount(), createTransactionDto.getReturnUrl());
@@ -24,21 +24,21 @@ public class WebPayClient {
         return response;
     }
 
-    private Object confirmTransaction(String token) throws TransactionCommitException, IOException {
+    public Object confirmTransaction(String token) throws TransactionCommitException, IOException {
         WebpayPlus.Transaction tx = new WebpayPlus.Transaction(new WebpayOptions(IntegrationCommerceCodes.WEBPAY_PLUS, IntegrationApiKeys.WEBPAY, IntegrationType.TEST));
         final WebpayPlusTransactionCommitResponse response = tx.commit(token);
 
         return response;
     }
 
-    private Object getTransaction(String token) throws IOException, TransactionStatusException {
+    public Object getTransaction(String token) throws IOException, TransactionStatusException {
         WebpayPlus.Transaction tx = new WebpayPlus.Transaction(new WebpayOptions(IntegrationCommerceCodes.WEBPAY_PLUS, IntegrationApiKeys.WEBPAY, IntegrationType.TEST));
         final WebpayPlusTransactionStatusResponse response = tx.status(token);
 
         return response;
     }
 
-    private Object cancelTransaction(String token, Integer amount) throws TransactionRefundException, IOException {
+    public Object cancelTransaction(String token, Double amount) throws TransactionRefundException, IOException {
         WebpayPlus.Transaction tx = new WebpayPlus.Transaction(new WebpayOptions(IntegrationCommerceCodes.WEBPAY_PLUS, IntegrationApiKeys.WEBPAY, IntegrationType.TEST));
         final WebpayPlusTransactionRefundResponse response = tx.refund(token, amount);
 
@@ -46,7 +46,7 @@ public class WebPayClient {
 
     }
 
-    private Object captureTransaction(CaptureTransactionDto captureTransactionDto) throws TransactionCaptureException, IOException {
+    public Object captureTransaction(CaptureTransactionDto captureTransactionDto) throws TransactionCaptureException, IOException {
         WebpayPlus.Transaction tx = new WebpayPlus.Transaction(new WebpayOptions(IntegrationCommerceCodes.WEBPAY_PLUS_DEFERRED, IntegrationApiKeys.WEBPAY, IntegrationType.TEST));
         final WebpayPlusTransactionCaptureResponse response = tx.capture(captureTransactionDto.getToken(), captureTransactionDto.getBuyOrder(),
                 captureTransactionDto.getAuthorizationCode(), captureTransactionDto.getAmount());
