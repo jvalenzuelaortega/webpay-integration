@@ -1,6 +1,9 @@
 package com.example.webpayintegration.controller;
 
+import com.example.webpayintegration.dto.request.CaptureTransactionRequestDto;
+import com.example.webpayintegration.dto.request.CreateTransactionRequestDto;
 import com.example.webpayintegration.service.WebPayService;
+import com.example.webpayintegration.utils.ObjectMapperUtils;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,30 +26,30 @@ public class WebPayOperationController {
 
     @GetMapping("/create-transaction")
     public ResponseEntity<?> createTransaction(@RequestParam Map<String, String> createTransactionParams){
-        return ResponseEntity.ok().body(createTransactionParams);
+        CreateTransactionRequestDto createTransactionDto = ObjectMapperUtils.convert(createTransactionParams, CreateTransactionRequestDto.class);
+        return ResponseEntity.ok().body(webPayService.createTransaction(createTransactionDto));
     }
 
     @GetMapping("/confirm-transaction")
     public ResponseEntity<?> confirmTransaction(@RequestParam String token){
-        return ResponseEntity.ok().body(token);
+        return ResponseEntity.ok().body(webPayService.confirmTransaction(token));
     }
 
     @GetMapping("/get-transaction-status")
     public ResponseEntity<?> getTransactionStatus(@RequestParam String token){
-        return ResponseEntity.ok().body(token);
+        return ResponseEntity.ok().body(webPayService.getTransaction(token));
     }
 
     @GetMapping("/cancel-transaction")
     public ResponseEntity<?> cancelTransaction(@RequestParam String token,
                                                @RequestParam String amount){
-        Map<String, String> cancelTransactionParams = new HashMap<>();
-        cancelTransactionParams.put("token", token);
-        cancelTransactionParams.put("amount", amount);
-        return ResponseEntity.ok().body(cancelTransactionParams);
+        Double amountParse = Double.valueOf(amount);
+        return ResponseEntity.ok().body(webPayService.cancelTransaction(token, amountParse));
     }
 
     @GetMapping("/capture-transaction")
     public ResponseEntity<?> captureTransaction(@RequestParam Map<String, String> captureTransactionParams){
-        return ResponseEntity.ok().body(captureTransactionParams);
+        CaptureTransactionRequestDto captureTransactionRequestDto = ObjectMapperUtils.convert(captureTransactionParams, CaptureTransactionRequestDto.class);
+        return ResponseEntity.ok().body(webPayService.captureTransaction(captureTransactionRequestDto));
     }
 }
