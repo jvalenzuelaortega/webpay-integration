@@ -7,6 +7,7 @@ import com.example.webpayintegration.utils.ObjectMapperUtils;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,7 +37,8 @@ public class WebPayOperationController {
 
     @GetMapping("/confirm-transaction")
     public ResponseEntity<?> confirmTransaction(@RequestParam(name = "token_ws") String token){
-        return ResponseEntity.ok().body(webPayService.confirmTransaction(token));
+        String urlFinal = "http://127.0.0.1:5500/webpay-result-test.html?token=" + token;
+        return ResponseEntity.status(HttpStatus.FOUND).header("Location", urlFinal).body(webPayService.confirmTransaction(token));
     }
 
     @GetMapping("/get-transaction-status")
