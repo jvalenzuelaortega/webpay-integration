@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Test - Webpay</title>
+</head>
+
+<body>
+   <h1>Webpay Testing - Result</h1>
+
+   <br>
+   <div>
+      <table id="resultTransaction">
+         <thead>
+            <tr>
+               <th>Vci</th>
+               <th>Amount</th>
+               <th>status</th>
+               <th>Buy Order</th>
+               <th>Session Id</th>
+               <th>Card Number</th>
+               <th>Accounting Date</th>
+               <th>Transaction Date</th>
+               <th>Authorization Code</th>
+               <th>Payment Type Code</th>
+               <th>Response Code</th>
+               <th>Installments Amount</th>
+               <th>Installments Number</th>
+               <th>Balance</th>
+            </tr>
+         </thead>
+         <tbody>
+         </tbody>
+      </table>
+   </div>
+
+</body>
+
+<script>
+   function getQueryParams() {
+      const queryString = window.location.search;
+      const urlParams = new URLSearchParams(queryString);
+      const params = {};
+      for (const [key, value] of urlParams.entries()) {
+         params[key] = value;
+      }
+
+      return params;
+   }
+
+   const queryParams = getQueryParams();
+   console.log(queryParams);
+
+   getStatusTransaction(queryParams.token);
+
+
+   function getStatusTransaction(token) {
+      let url = 'http://localhost:8080/get-transaction-status';
+      let tokenParameter = "token_ws=".concat('', token);
+
+      url = `${url}?${tokenParameter}`;
+
+      const options = {
+         method: 'GET',
+         headers: {
+            'Content-Type': 'application/json'
+         }
+      };
+
+      fetch(url, options)
+         .then(response => {
+            if (!response.ok) {
+               throw new Error("error call microservice")
+            }
+            return response.json();
+         })
+         .then(data => {
+            console.log(data);
+            insertTransactionResultInTable(data);
+
+         })
+         .catch(error => {
+            console.error('Problem with operation: ', error);
+         });
+   }
+
+   function insertTransactionResultInTable(result) {
+      var table = document.getElementById("resultTransaction").getElementsByTagName('tbody')[0];
+      var row = table.insertRow();
+
+      var vci = row.insertCell(0);
+      var amount = row.insertCell(1);
+      var status = row.insertCell(2);
+      var buyOrder = row.insertCell(3);
+      var sessionId = row.insertCell(4);
+      var cardNumber = row.insertCell(5);
+      var accountingDate = row.insertCell(6);
+      var transactionDate = row.insertCell(7);
+      var authorizationCode = row.insertCell(8);
+      var paymentTypeCode = row.insertCell(9);
+      var responseCode = row.insertCell(10);
+      var installmentsAmount = row.insertCell(11);
+      var installmentsNumber = row.insertCell(12);
+      var balance = row.insertCell(13);
+
+      vci.innerHTML = result.vci;
+      amount.innerHTML = result.amount;
+      status.innerHTML = result.status;
+      buyOrder.innerHTML = result.buyOrder;
+      sessionId.innerHTML = result.sessionId;
+      cardNumber.innerHTML = result.cardNumber;
+      accountingDate.innerHTML = result.accountingDate;
+      transactionDate.innerHTML = result.transactionDate;
+      authorizationCode.innerHTML = result.authorizationCode;
+      paymentTypeCode.innerHTML = result.paymentTypeCode;
+      responseCode.innerHTML = result.responseCode;
+      installmentsAmount.innerHTML = result.installmentsAmount;
+      installmentsNumber.innerHTML = result.installmentsNumber;
+      balance.innerHTML = result.balance;
+
+   }
+
+
+</script>
+
+</html>
