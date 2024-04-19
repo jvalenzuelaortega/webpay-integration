@@ -46,7 +46,7 @@ public class WebPayOperationController {
 
     @GetMapping("/cancel-transaction")
     public ResponseEntity<?> cancelTransaction(@RequestParam(name = "token_ws") String token,
-                                               @RequestParam String amount,
+                                               @RequestParam(name = "amount") String amount,
                                                HttpServletRequest request){
         Double amountParse = Double.valueOf(amount);
         return ResponseEntity.ok().body(webPayService.cancelTransaction(token, amountParse));
