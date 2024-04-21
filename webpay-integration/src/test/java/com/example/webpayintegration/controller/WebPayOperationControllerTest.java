@@ -1,28 +1,76 @@
 package com.example.webpayintegration.controller;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+@WebMvcTest(WebPayOperationController.class)
 class WebPayOperationControllerTest {
 
-    @Test
-    void createTransaction() {
-    }
+	@Autowired
+	private MockMvc mockMvc;
 
-    @Test
-    void confirmTransaction() {
-    }
+	@Test
+	void createTransaction() throws Exception {
+		// Arrange
 
-    @Test
-    void getTransactionStatus() {
-    }
+		// Act
+		mockMvc.perform(get("/create-transaction").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(jsonPath("", is("")));
 
-    @Test
-    void cancelTransaction() {
-    }
+		// Assert
+	}
 
-    @Test
-    void captureTransaction() {
-    }
+	@Test
+	void confirmTransaction() throws Exception {
+		// Arrange
+
+		// Act
+		mockMvc.perform(get("/create-transaction").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(jsonPath("", is("")));
+
+		// Assert
+	}
+
+	@Test
+	void getTransactionStatus() throws Exception {
+		// Arrange
+
+		// Act
+		mockMvc.perform(get("/create-transaction").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(jsonPath("", is("")));
+
+		// Assert
+	}
+
+	@Test
+	void cancelTransaction() throws Exception {
+
+		// Arrange
+
+		// Act
+		mockMvc.perform(get("/create-transaction").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(jsonPath("", is("")));
+
+		// Assert
+	}
+
+	@Test
+	void captureTransaction() throws Exception {
+
+		// Arrange
+
+		// Act
+		mockMvc.perform(get("/create-transaction").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(jsonPath("", is("")));
+
+		// Assert
+	}
 }

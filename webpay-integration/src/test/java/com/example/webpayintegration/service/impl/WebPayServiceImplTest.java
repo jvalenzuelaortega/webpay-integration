@@ -1,28 +1,106 @@
 package com.example.webpayintegration.service.impl;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+
+import com.example.webpayintegration.dto.request.CaptureTransactionRequestDto;
+import com.example.webpayintegration.dto.request.CreateTransactionRequestDto;
+import com.example.webpayintegration.dto.response.CancelTransactionResponseDto;
+import com.example.webpayintegration.dto.response.CaptureTransactionResponseDto;
+import com.example.webpayintegration.dto.response.ConfirmTransactionResponseDto;
+import com.example.webpayintegration.dto.response.CreateTransactionResponseDto;
+import com.example.webpayintegration.dto.response.StatusTransactionResponseDto;
+import com.example.webpayintegration.sdk.WebPayClient;
+
+import lombok.SneakyThrows;
 
 class WebPayServiceImplTest {
 
-    @Test
-    void createTransaction() {
-    }
+	@InjectMocks
+	private WebPayServiceImpl webPayServiceImpl;
 
-    @Test
-    void confirmTransaction() {
-    }
+	@Mock
+	private WebPayClient webPayClient;
 
-    @Test
-    void getTransaction() {
-    }
+	@Test
+	@SneakyThrows
+	void createTransaction() {
+		// Arrange
+		CreateTransactionRequestDto createTransactionRequestDto = new CreateTransactionRequestDto();
+		CreateTransactionResponseDto createTransactionResponseDto = CreateTransactionResponseDto.builder().build();
+		when(webPayClient.createTransaction(any())).thenReturn(createTransactionResponseDto);
 
-    @Test
-    void cancelTransaction() {
-    }
+		// Act
+		CreateTransactionResponseDto responseDto = webPayServiceImpl.createTransaction(createTransactionRequestDto);
 
-    @Test
-    void captureTransaction() {
-    }
+		// Assert
+		assertNotNull(responseDto);
+	}
+
+	@Test
+	@SneakyThrows
+	void confirmTransaction() {
+		// Arrange
+		String token = "";
+		ConfirmTransactionResponseDto confirmTransactionResponseDto = ConfirmTransactionResponseDto.builder().build();
+		when(webPayClient.confirmTransaction(anyString())).thenReturn(confirmTransactionResponseDto);
+
+		// Act
+		ConfirmTransactionResponseDto responseDto = webPayServiceImpl.confirmTransaction(token);
+
+		// Assert
+		assertNotNull(responseDto);
+	}
+
+	@Test
+	@SneakyThrows
+	void getTransaction() {
+		// Arrange
+		String token = "";
+		StatusTransactionResponseDto statusTransactionResponseDto = StatusTransactionResponseDto.builder().build();
+		when(webPayClient.getTransaction(anyString())).thenReturn(statusTransactionResponseDto);
+
+		// Act
+		StatusTransactionResponseDto responseDto = webPayServiceImpl.getTransaction(token);
+
+		// Assert
+		assertNotNull(responseDto);
+	}
+
+	@Test
+	@SneakyThrows
+	void cancelTransaction() {
+		// Arrange
+		String token = "";
+		Double amount = 100.0D;
+		CancelTransactionResponseDto cancelTransactionResponseDto = CancelTransactionResponseDto.builder().build();
+		when(webPayClient.cancelTransaction(token, amount)).thenReturn(cancelTransactionResponseDto);
+
+		// Act
+		CancelTransactionResponseDto responseDto = webPayServiceImpl.cancelTransaction(token, amount);
+
+		// Assert
+		assertNotNull(responseDto);
+	}
+
+	@Test
+	@SneakyThrows
+	void captureTransaction() {
+		// Arrange
+		CaptureTransactionRequestDto captureTransactionRequestDto = new CaptureTransactionRequestDto();
+		CaptureTransactionResponseDto captureTransactionResponseDto = CaptureTransactionResponseDto.builder().build();
+		when(webPayClient.captureTransaction(any())).thenReturn(captureTransactionResponseDto);
+		
+		// Act
+		CaptureTransactionResponseDto responseDto = webPayServiceImpl.captureTransaction(captureTransactionRequestDto);
+		
+		// Assert
+		assertNotNull(responseDto);
+	}
 }
