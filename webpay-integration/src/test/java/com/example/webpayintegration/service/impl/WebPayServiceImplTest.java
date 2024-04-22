@@ -3,8 +3,10 @@ package com.example.webpayintegration.service.impl;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -27,6 +29,12 @@ class WebPayServiceImplTest {
 
 	@Mock
 	private WebPayClient webPayClient;
+	
+	@BeforeEach
+	void setUp() {
+		webPayClient = mock(WebPayClient.class);
+		webPayServiceImpl = new WebPayServiceImpl(webPayClient);
+	}
 
 	@Test
 	@SneakyThrows
@@ -47,7 +55,7 @@ class WebPayServiceImplTest {
 	@SneakyThrows
 	void confirmTransaction() {
 		// Arrange
-		String token = "";
+		String token = "token123456";
 		ConfirmTransactionResponseDto confirmTransactionResponseDto = ConfirmTransactionResponseDto.builder().build();
 		when(webPayClient.confirmTransaction(anyString())).thenReturn(confirmTransactionResponseDto);
 
@@ -62,7 +70,7 @@ class WebPayServiceImplTest {
 	@SneakyThrows
 	void getTransaction() {
 		// Arrange
-		String token = "";
+		String token = "token123456";
 		StatusTransactionResponseDto statusTransactionResponseDto = StatusTransactionResponseDto.builder().build();
 		when(webPayClient.getTransaction(anyString())).thenReturn(statusTransactionResponseDto);
 
@@ -77,7 +85,7 @@ class WebPayServiceImplTest {
 	@SneakyThrows
 	void cancelTransaction() {
 		// Arrange
-		String token = "";
+		String token = "token123456";
 		Double amount = 100.0D;
 		CancelTransactionResponseDto cancelTransactionResponseDto = CancelTransactionResponseDto.builder().build();
 		when(webPayClient.cancelTransaction(token, amount)).thenReturn(cancelTransactionResponseDto);
