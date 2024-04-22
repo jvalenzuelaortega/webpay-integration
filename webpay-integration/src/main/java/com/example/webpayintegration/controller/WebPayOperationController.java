@@ -22,6 +22,7 @@ import java.util.Map;
 public class WebPayOperationController {
 
     private final WebPayService webPayService;
+    private static final String REDIRECT_URL = "http://127.0.0.1:5500/webpay-result-test.html?token=%s";
 
     public WebPayOperationController(WebPayService webPayService) {
         this.webPayService = webPayService;
@@ -37,8 +38,7 @@ public class WebPayOperationController {
 
     @GetMapping("/confirm-transaction")
     public ResponseEntity<?> confirmTransaction(@RequestParam(name = "token_ws") String token){
-        String urlFinal = "http://127.0.0.1:5500/webpay-result-test.html?token=" + token;
-        return ResponseEntity.status(HttpStatus.FOUND).header("Location", urlFinal).body(webPayService.confirmTransaction(token));
+        return ResponseEntity.status(HttpStatus.FOUND).header("Location", String.format(REDIRECT_URL, token)).body(webPayService.confirmTransaction(token));
     }
 
     @GetMapping("/get-transaction-status")
