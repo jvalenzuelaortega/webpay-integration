@@ -1,125 +1,140 @@
 package com.example.webpayintegration.controller;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import com.example.webpayintegration.service.impl.WebPayServiceImpl;
-import org.junit.jupiter.api.BeforeEach;
+import com.example.webpayintegration.dto.response.CancelTransactionResponseDto;
+import com.example.webpayintegration.dto.response.CaptureTransactionResponseDto;
+import com.example.webpayintegration.dto.response.ConfirmTransactionResponseDto;
+import com.example.webpayintegration.dto.response.CreateTransactionResponseDto;
+import com.example.webpayintegration.dto.response.StatusTransactionResponseDto;
+import com.example.webpayintegration.service.WebPayService;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.ResponseEntity;
-import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.web.servlet.MockMvc;
 
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
+import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.HashMap;
-import java.util.Map;
+@WebMvcTest
+public class WebPayOperationControllerTest {
 
-@ExtendWith(MockitoExtension.class)
-class WebPayOperationControllerTest {
+    @Autowired
+    private MockMvc mockMvc;
 
-	@Mock
-	private WebPayServiceImpl webPayService;
-	
-	@InjectMocks
-	private WebPayOperationController webPayOperationController;
+    @MockBean
+    private WebPayService webPayService;
 
-	@BeforeEach
-	void setUp() {
-		webPayService = mock(WebPayServiceImpl.class);
-		webPayOperationController = new WebPayOperationController(webPayService);
-	}
+    @Test
+    void createTransaction() throws Exception {
+        // Arrange
+        CreateTransactionResponseDto mockResponseDto = CreateTransactionResponseDto.builder()
+                .url("http://localhost:8080/webpay")
+                .token("token")
+                .build();
+        when(webPayService.createTransaction(any())).thenReturn(mockResponseDto);
 
-	@Test
-	void createTransaction() {
-		// Arrange
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+        // Act
+        this.mockMvc.perform(get("/create-transaction")
+                        .param("buyOrder", "buyOrder")
+                        .param("sessionId", "sessionId")
+                        .param("amount", "100"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("token")));
 
-		Map<String, String> params = new HashMap<>();
-		params.put("buyOrder", "12345");
-		params.put("sessionId", "sesion1234");
-		params.put("amount", "100");
-		params.put("returnUrl", "http://localhost:8080/create");
+        // Assert
+        verify(webPayService).createTransaction(any());
+    }
 
-		when(webPayService.createTransaction(any())).thenReturn(any());
+    @Test
+    void confirmTransaction() throws Exception {
+        // Arrange
+        String token = "token";
+        ConfirmTransactionResponseDto mockResponseDto = ConfirmTransactionResponseDto.builder()
+                .authorizationCode("123")
+                .build();
 
-		// Act
-		ResponseEntity<?> responseEntity = webPayOperationController.createTransaction(params, request);
+        when(webPayService.confirmTransaction(token)).thenReturn(mockResponseDto);
 
-		// Assert
-		assertNotNull(responseEntity);
-	}
+        // Act
+        this.mockMvc.perform(get("/confirm-transaction")
+                        .param("token_ws", token))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(content().string(containsString("123")));
 
-	@Test
-	void confirmTransaction() {
-		// Arrange
-		String token = "12345";
+        // Assert
+    }
 
-		//when(webPayService.getTransaction(anyString())).thenReturn(any());
+    @Test
+    void getTransaction() throws Exception {
+        // Arrange
+        String token = "token";
+        StatusTransactionResponseDto mockResponseDto = StatusTransactionResponseDto.builder()
+                .authorizationCode("123")
+                .build();
 
-		// Act
-		ResponseEntity<?> responseEntity = webPayOperationController.confirmTransaction(token);
+        when(webPayService.getTransaction(token)).thenReturn(mockResponseDto);
 
-		// Assert
-		assertNotNull(responseEntity);
-	}
+        // Act
+        this.mockMvc.perform(get("/get-transaction-status")
+                .param("token_ws", token))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("123")));
 
-	@Test
-	void getTransactionStatus() {
-		// Arrange
-		String token = "12345";
+        // Assert
+    }
 
-		when(webPayService.getTransaction(anyString())).thenReturn(any());
+    @Test
+    void cancelTransaction() throws Exception {
+        // Arrange
+        String token = "token";
+        Double amount = 100.0;
+        CancelTransactionResponseDto mockResponseDto = CancelTransactionResponseDto.builder()
+                .authorizationCode("123")
+                .authorizationDate("2024/01/01")
+                .build();
 
-		// Act
-		ResponseEntity<?> responseEntity = webPayOperationController.getTransactionStatus(token);
+        when(webPayService.cancelTransaction(token, amount)).thenReturn(mockResponseDto);
 
-		// Assert
-		assertNotNull(responseEntity);
-	}
+        // Act
+        this.mockMvc.perform(get("/cancel-transaction")
+                .param("token_ws", token)
+                .param("amount", amount.toString()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("2024/01/01")));
 
-	@Test
-	void cancelTransaction() {
-		// Arrange
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
-		String token = "12345";
-		String amount = "1000";
+        // Assert
+    }
 
-		//when(webPayService.cancelTransaction(anyString(), anyDouble())).thenReturn(any());
+    @Test
+    void captureTransaction() throws Exception {
+        // Arrange
+        CaptureTransactionResponseDto mockResponseDto = CaptureTransactionResponseDto.builder()
+                .authorizationCode("123")
+                .capturedAmount(100.0D)
+                .authorizationDate("2024/01/01")
+                .build();
 
-		// Act
-		ResponseEntity<?> responseEntity = webPayOperationController.cancelTransaction(token, amount, request);
+        // Act
+        when(webPayService.captureTransaction(any())).thenReturn(mockResponseDto);
 
-		// Assert
-		assertNotNull(responseEntity);
-	}
-
-	@Test
-	void captureTransaction() {
-		// Arrange
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
-
-		Map<String, String> params = new HashMap<>();
-		params.put("token", "asdfghjkl1234");
-		params.put("buyOrder", "12345");
-		params.put("authorizationCode", "123");
-		params.put("amount", "100");
-
-		when(webPayService.captureTransaction(any())).thenReturn(any());
-
-		// Act
-		ResponseEntity<?> responseEntity = webPayOperationController.captureTransaction(params, request);
-
-		// Assert
-		assertNotNull(responseEntity);
-	}
+        // Assert
+        this.mockMvc.perform(get("/capture-transaction")
+                        .param("token", "token")
+                        .param("buyOrder", "buyOrder")
+                        .param("authorizationCode", "123")
+                        .param("amount", "100"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("123")));
+    }
 }
