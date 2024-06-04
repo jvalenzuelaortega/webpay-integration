@@ -5,19 +5,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ObjectMapperUtils {
 
+    private static final ObjectMapper mapper = new ObjectMapper();
+
     public static <T> T convert(Object source, Class<T> targetClass) {
         if (source == null) {
             return null;
         }
-        final ObjectMapper mapper = new ObjectMapper();
         return mapper.convertValue(source, targetClass);
     }
     
     public static String convertObjectToJson(Object source) throws JsonProcessingException {
-    	if(source == null) {
-    		return null;
-    	}
-    	final ObjectMapper mapper = new ObjectMapper();
-    	return mapper.writeValueAsString(source);
+        if (source == null) {
+            return null;
+        }
+        return mapper.writeValueAsString(source);
     }
 }
