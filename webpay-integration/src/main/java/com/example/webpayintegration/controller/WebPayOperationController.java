@@ -22,7 +22,7 @@ import java.util.Map;
 public class WebPayOperationController {
 
     private final WebPayService webPayService;
-    private static final String REDIRECT_URL = "http://127.0.0.1:5500/webpay-result-test.html?token=%s";
+    private static final String REDIRECT_URL = "http://127.0.0.1:5500/webpay-front-test/webpay-result-test.html?token=%s";
 
     public WebPayOperationController(WebPayService webPayService) {
         this.webPayService = webPayService;
