@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Test - Webpay</title>
+</head>
+
+<body>
+   <h1>Webpay Testing</h1>
+
+   <div>
+      <form id="formPay" method="post" action="#">
+         <input type="hidden" name="token_ws" id="tokenWs" value="value" />
+         <input type="submit" value="Pay transaction" />
+      </form>
+   </div>
+</body>
+
+<script>
+
+   createTransaction('5467389', 'seasion_237493', 56000);
+
+   function createTransaction(buyOrder, sessionId, amount) {
+      let url = 'http://localhost:8080/create-transaction';
+      let buyOrderParameter = "buyOrder=".concat('', buyOrder);
+      let sessionIdParameter = "sessionId=".concat('', sessionId); 
+      let amountParameter = "amount=".concat('', amount);
+
+      url = `${url}?${buyOrderParameter}&${sessionIdParameter}&${amountParameter}`;
+
+      const options = {
+         method: 'GET',
+         headers: {
+            'Content-Type': 'application/json'
+         }
+      };
+
+      fetch(url, options)
+         .then(response => {
+            if (!response.ok) {
+               throw new Error("error call microservice")
+            }
+            return response.json();
+         })
+         .then(data => {
+            console.log(data);
+            const formPay = document.getElementById('formPay');
+            const tokenWs = document.getElementById('tokenWs');
+
+            formPay.action = data.url;
+            tokenWs.value = data.token;
+            
+         })
+         .catch(error => {
+            console.error('Problem with operation: ', error);
+         });
+   }
+
+</script>
+
+</html>
