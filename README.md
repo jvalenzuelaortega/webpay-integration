@@ -1,4 +1,4 @@
-# Title of the project
+# Webpay Plus Spring Boot integration
 
 Spring boot application that integrates the Transbank SDK for Webpay Plus operations
 
@@ -10,7 +10,6 @@ See **Deployment** to learn how to deploy the project.
 
 
 ### Prerequisites 📋
-
 
 ```
 Java 21
@@ -53,8 +52,8 @@ To use test cards, review the documentation of [Transbank Developers](https://ww
 
 _Mention the tools you used to create your project_
 
-* [Spring Boot](http://www.dropwizard.io/1.0.2/docs/) - Java Framework
-* [Gradle](https://maven.apache.org/) - Dependency manager
+* [Spring Boot](https://spring.io/projects/spring-boot) - Java Framework
+* [Gradle](https://gradle.org/) - Dependency manager
 
 ## Contributing 🖇️
 
